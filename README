@@ -1,0 +1,18 @@
+Instructions before running the script:
+
+-----------
+Instructions
+-----------
+
+1) pip install psutil
+
+
+
+-----------
+Libraries
+-----------
+
+
+psutil:
+    Github: https://github.com/giampaolo/psutil
+    Documentation: https://psutil.readthedocs.io/en/latest/

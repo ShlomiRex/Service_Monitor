@@ -1,23 +1,38 @@
-import win32con
-import win32service
+import platform
+import os
+import sys
+import psutil
 
-def ListServices():
-	resume = 0
-	accessSCM = win32con.GENERIC_READ
-	accessSrv = win32service.SC_MANAGER_ALL_ACCESS
 
-	#Open Service Control Manager
-	hscm = win32service.OpenSCManager(None, None, accessSCM)
 
-	#Enumerate Service Control Manager DB
-	typeFilter = win32service.SERVICE_WIN32
-	stateFilter = win32service.SERVICE_STATE_ALL
 
-	statuses = win32service.EnumServicesStatus(hscm, typeFilter, stateFilter)
-	num_of_services = len(statuses)
-	for (short_name, desc, status) in statuses:
-		print(short_name, "     ", desc, "     ", status)
-        
-	print(num_of_services)
+print(list(psutil.win_service_iter()))
 
-ListServices()
+# Choose mode: manual or monitor
+if(len(sys.argv) <= 1):
+	print("Choose mode: monitor or manual")
+	exit()
+
+# Get seconds
+if("monitor" == sys.argv[1]):
+	print("> Monitor mode")
+	if(len(sys.argv) <= 2):
+		print("Enter how much seconds to refresh monitor")
+		exit()
+	seconds = sys.argv[2]
+elif("manual" == sys.argv[1]):
+	print("> Manual mode")
+else:
+	print("Use 'manual' or 'monitor' mode")
+	exit()
+
+platform = platform.system()
+###################################### Windows Platform ######################################
+if(platform == "Windows"):
+	print("> Windows detected")
+
+
+
+###################################### Linux Platform ######################################
+else:
+	print("> Linux detected")
