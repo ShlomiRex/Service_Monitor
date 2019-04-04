@@ -92,7 +92,6 @@ if(len(sys.argv) <= 1):
 	print("Choose mode: monitor or manual")
 	exit()
 
-seconds = -1
 # Monitor mode
 if("monitor" == sys.argv[1]):
 	if(len(sys.argv) <= 2):
@@ -102,33 +101,34 @@ if("monitor" == sys.argv[1]):
 	seconds = sys.argv[2]
 	str = "> Monitor mode: Refresh rate of {} seconds".format(seconds)
 	print(str)
+
+	platform = platform.system()
+	status_log = open("statusLog.log", "a")
+	log_file = open("serviceList.log", "w")
+	###################################### Windows Platform ######################################
+	if(platform == "Windows"):
+		print("> Windows detected")
+		dict = Win_SampleToLog(log_file)
+		while True:
+			my_dict = Win_SampleToLog(open("serviceList.log", "w"))
+			time.sleep(float(seconds)) 
+			my_dict2 = Win_SampleToLog(open("serviceList.log", "w"))
+			DiffSamples(status_log, my_dict, my_dict2, platform)
+
+
+
+	###################################### Linux Platform ######################################
+	else:
+		print("> Linux detected")
+		dict = Linux_SampleToLog(log_file)
+		while True:
+			my_dict = Linux_SampleToLog(open("serviceList.log", "w"))
+			time.sleep(float(seconds)) 
+			my_dict2 = Linux_SampleToLog(open("serviceList.log", "w"))
+			DiffSamples(status_log, my_dict, my_dict2, platform)
+	
 elif("manual" == sys.argv[1]):
 	print("> Manual mode")
 else:
 	print("Use 'manual' or 'monitor' mode")
 	exit()
-
-platform = platform.system()
-status_log = open("statusLog.log", "a")
-log_file = open("serviceList.log", "w")
-###################################### Windows Platform ######################################
-if(platform == "Windows"):
-	print("> Windows detected")
-	dict = Win_SampleToLog(log_file)
-	while True:
-		my_dict = Win_SampleToLog(open("serviceList.log", "w"))
-		time.sleep(float(seconds)) 
-		my_dict2 = Win_SampleToLog(open("serviceList.log", "w"))
-		DiffSamples(status_log, my_dict, my_dict2, platform)
-
-
-
-###################################### Linux Platform ######################################
-else:
-	print("> Linux detected")
-	dict = Linux_SampleToLog(log_file)
-	while True:
-		my_dict = Linux_SampleToLog(open("serviceList.log", "w"))
-		time.sleep(float(seconds)) 
-		my_dict2 = Linux_SampleToLog(open("serviceList.log", "w"))
-		DiffSamples(status_log, my_dict, my_dict2, platform)
