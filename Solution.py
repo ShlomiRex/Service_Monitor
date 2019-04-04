@@ -1,9 +1,10 @@
 import platform
 import os
 import sys
-import psutil
+import psutil # For Windows service library
 import datetime
 import time
+import subprocess # For Linux services
 
 
 
@@ -25,6 +26,16 @@ def Win_SampleToLog(log_file):
         dict[service_name] = service_status
     log_file.close()
     return dict
+
+'''
+Linux function
+Log_file = Write to this file
+Returns directory of Service name and Service status
+'''
+def Linux_SampleToLog(log_file):
+	output = subprocess.check_output(["service", "--status-all"])
+	str = "Output = {}".format(output)
+	print(str)
 
 
 '''
@@ -60,6 +71,7 @@ if(len(sys.argv) <= 1):
 	print("Choose mode: monitor or manual")
 	exit()
 
+seconds = -1
 # Monitor mode
 if("monitor" == sys.argv[1]):
 	print("> Monitor mode")
@@ -84,11 +96,8 @@ if(platform == "Windows"):
 	log_file = open("serviceList.log", "w")
 	dict = Win_SampleToLog(log_file)
 	while True:
-		#print("> Sampleing (1) to serviceList.log ...")
 		my_dict = Win_SampleToLog(open("serviceList.log", "w"))
-		#print("> Sleeping ...")
-		time.sleep(10) # Sleep for 10 seconds
-		#print("> Sampleing (2) to serviceList.log ...")
+		time.sleep(float(seconds)) # Sleep for 10 seconds
 		my_dict2 = Win_SampleToLog(open("serviceList.log", "w"))
 		DiffSamples(status_log, my_dict, my_dict2)
 
