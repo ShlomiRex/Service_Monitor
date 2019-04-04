@@ -1,0 +1,5 @@
+2019-04-04 11:12:42.212000: Service 'WebClient' changed status from 'running' to 'stopped'
+2019-04-04 11:12:52.290000: Service 'WebClient' changed status from 'stopped' to 'running'
+2019-04-04 11:13:28.122000: Service 'WebClient' changed status from 'running' to 'stopped'
+2019-04-04 11:13:38.202000: Service 'WebClient' changed status from 'stopped' to 'running'
+2019-04-04 11:13:58.365000: Service 'WebClient' changed status from 'running' to 'stopped'
