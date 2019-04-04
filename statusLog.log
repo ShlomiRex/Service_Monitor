@@ -7,3 +7,7 @@
 2019-04-04 11:20:45.322000: Service 'WebClient' changed status from 'stopped' to 'running'
 2019-04-04 11:20:47.405000: Service 'WebClient' changed status from 'running' to 'stopped'
 2019-04-04 11:20:51.557000: Service 'WebClient' changed status from 'stopped' to 'running'
+2019-04-04 11:57:04.444557: Service 'ssh' changed status from '+' to '-'
+2019-04-04 11:57:41.665627: Service 'ssh' changed status from '-' to '+'
+2019-04-04 12:02:09.051455: Service 'ssh' changed status from 'stopped' to 'running'
+2019-04-04 12:02:20.448930: Service 'ssh' changed status from 'running' to 'stopped'

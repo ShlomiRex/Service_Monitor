@@ -33,10 +33,17 @@ Log_file = Write to this file
 Returns directory of Service name and Service status
 '''
 def Linux_SampleToLog(log_file):
+	dict = {}
 	output = subprocess.check_output(["service", "--status-all"])
-	str = "Output = {}".format(output)
-	print(str)
-
+	for line in output.split('\n'):
+		date = datetime.datetime.now()
+		service_name = line[8:]
+		service_status = line[3:4]
+		line_to_write = "{}: {} {}\n".format(date, service_name,service_status)
+		log_file.write(line_to_write)
+		dict[service_name] = service_status
+	log_file.close()
+	return dict
 
 '''
 Diffirentiate between 2 samples.
@@ -45,7 +52,7 @@ sample1 = Old sample
 sample2 = New sample
 Return dict 
 '''
-def DiffSamples(log_file, sample1, sample2):
+def DiffSamples(log_file, sample1, sample2, platform):
 	for key, value in sample1.items():
 		date = datetime.datetime.now()
 		if key not in sample2:
@@ -54,7 +61,21 @@ def DiffSamples(log_file, sample1, sample2):
 			log_file.write(str+"\n")
 			log_file.flush()
 		elif value != sample2[key]:
-			str = "{}: Service '{}' changed status from '{}' to '{}'".format(date, key, value, sample2[key])
+			if platform == "Windows":
+				str = "{}: Service '{}' changed status from '{}' to '{}'".format(date, key, value, sample2[key])
+			else:
+				status1 = value
+				status2 = sample2[key]
+				if status1 == "+":
+					status1 = "running"
+				else:
+					status1 = "stopped"
+
+				if status2 == "+":
+					status2 = "running"
+				else:
+					status2 = "stopped"
+				str = "{}: Service '{}' changed status from '{}' to '{}'".format(date, key, status1, status2)
 			print(str)
 			log_file.write(str+"\n")
 			log_file.flush()
@@ -74,7 +95,6 @@ if(len(sys.argv) <= 1):
 seconds = -1
 # Monitor mode
 if("monitor" == sys.argv[1]):
-	print("> Monitor mode")
 	if(len(sys.argv) <= 2):
 		print("Enter how much seconds to refresh monitor")
 		exit()
@@ -89,20 +109,26 @@ else:
 	exit()
 
 platform = platform.system()
+status_log = open("statusLog.log", "a")
+log_file = open("serviceList.log", "w")
 ###################################### Windows Platform ######################################
 if(platform == "Windows"):
 	print("> Windows detected")
-	status_log = open("statusLog.log", "a")
-	log_file = open("serviceList.log", "w")
 	dict = Win_SampleToLog(log_file)
 	while True:
 		my_dict = Win_SampleToLog(open("serviceList.log", "w"))
 		time.sleep(float(seconds)) # Sleep for 10 seconds
 		my_dict2 = Win_SampleToLog(open("serviceList.log", "w"))
-		DiffSamples(status_log, my_dict, my_dict2)
+		DiffSamples(status_log, my_dict, my_dict2, platform)
 
 
 
 ###################################### Linux Platform ######################################
 else:
 	print("> Linux detected")
+	dict = Linux_SampleToLog(log_file)
+	while True:
+		my_dict = Linux_SampleToLog(open("serviceList.log", "w"))
+		time.sleep(float(seconds)) # Sleep for 10 seconds
+		my_dict2 = Linux_SampleToLog(open("serviceList.log", "w"))
+		DiffSamples(status_log, my_dict, my_dict2, platform)
