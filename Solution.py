@@ -117,7 +117,7 @@ if(platform == "Windows"):
 	dict = Win_SampleToLog(log_file)
 	while True:
 		my_dict = Win_SampleToLog(open("serviceList.log", "w"))
-		time.sleep(float(seconds)) # Sleep for 10 seconds
+		time.sleep(float(seconds)) 
 		my_dict2 = Win_SampleToLog(open("serviceList.log", "w"))
 		DiffSamples(status_log, my_dict, my_dict2, platform)
 
@@ -129,6 +129,6 @@ else:
 	dict = Linux_SampleToLog(log_file)
 	while True:
 		my_dict = Linux_SampleToLog(open("serviceList.log", "w"))
-		time.sleep(float(seconds)) # Sleep for 10 seconds
+		time.sleep(float(seconds)) 
 		my_dict2 = Linux_SampleToLog(open("serviceList.log", "w"))
 		DiffSamples(status_log, my_dict, my_dict2, platform)
