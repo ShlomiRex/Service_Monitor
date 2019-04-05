@@ -4,7 +4,28 @@ Instructions before running the script:
 Instructions
 -----------
 
-1) pip install psutil
+1) $ pip install psutil
+
+
+
+
+
+-----------
+How to use
+-----------
+
+Monitor mode:
+$ python Solution.py monitor <seconds>
+
+Manual mode:
+$ python Solution.py manual <date1> <date2>
+Example date: 2019-04-05 15:20:55
+
+YES YOU NEED TO ADD 'SPACE' IN THE DATE. FULL EXAMPLE:
+$ python Solution.py manual 2019-04-05 15:20:55 2019-04-05 15:33:20
+
+
+
 
 
 

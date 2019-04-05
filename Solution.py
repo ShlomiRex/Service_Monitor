@@ -9,6 +9,40 @@ import subprocess # For Linux services
 SERVICE_LIST_FILE = "serviceList.log"
 STATUS_LOG_FILE = "statusLog.log"
 
+
+'''
+Input: String
+Output: Datetime object OR False
+This function checks that the user entered correct date. If not returns False. If yes, returns the datetime object.
+'''
+def validDate(date_text):
+	try:
+		return datetime.datetime.strptime(date_text, "%Y-%m-%d %H:%M:%S")
+	except:
+		print("{} : Incorrect data format, it should be YYYY-MM-DD HH:MM:SS".format(date_text))
+		return False
+
+'''
+Input: Datetime, Datetime
+Returns list of lines that represent events that are taken in between date1 and date2.
+'''
+def filterStatusLogByDates(date1, date2):
+	result = []
+	with open(STATUS_LOG_FILE, "r") as log_file:
+		for line in log_file:
+			str_line_date = line[0:19]
+			line_date = validDate(str_line_date)
+			if line_date == False:
+				print("> Something went wront with date conversion of status log")
+				exit()
+			if date1 <= line_date <= date2:
+				result.append(line)
+
+	return result
+
+'''
+Initialized files: If log files don't exist, create them, if exists, "clean" their contents.
+'''
 def initFiles():
 	if os.path.exists(SERVICE_LIST_FILE):
 		os.remove(SERVICE_LIST_FILE)
@@ -143,6 +177,24 @@ if("monitor" == sys.argv[1]):
 	
 elif("manual" == sys.argv[1]):
 	print("> Manual mode")
+	if (len(sys.argv) <= 5):
+		print("Please enter 2 dates for sample range")
+		exit()
+	txt_date1 = sys.argv[2] + " " + sys.argv[3]
+	txt_date2 = sys.argv[4] + " " + sys.argv[5]
+
+	date1 = validDate(txt_date1)
+	date2 = validDate(txt_date2)
+	if date1 == False or  date2 == False:
+		print("Please try again")
+		exit()
+
+	# Success, now search the correct sampleings
+	lines = filterStatusLogByDates(date1, date2)
+	print("> Total events found: " + str(len(lines)))
+	for line in lines:
+		print(line)
+
 else:
 	print("Use 'manual' or 'monitor' mode")
 	exit()
